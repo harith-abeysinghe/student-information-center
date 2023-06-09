@@ -1,3 +1,3 @@
 ITS230,Object Oriented Programming,3
-CSC300,Introduction to programming,3
-C0224,Computer Arch,3
+CSC300,Introduction to programming I,3
+CSC230,Introduction to programming II,3

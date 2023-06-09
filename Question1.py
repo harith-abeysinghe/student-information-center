@@ -1,5 +1,16 @@
 import os
 
+def is_valid_credit_hour(credit_hour):
+    try:
+        credit_hour = int(credit_hour)
+        if 1 <= credit_hour <= 5:
+            return True
+        else:
+            return False
+    except ValueError:
+        return False
+
+
 def add_course():
     course_code = input("Enter the course code: ")
 
@@ -16,13 +27,9 @@ def add_course():
     valid_credit_hour = False
     while not valid_credit_hour:
         credit_hour = input("How many credit hours does this course have? ")
-        try:
-            credit_hour = int(credit_hour)
-            if 1 <= credit_hour <= 5:
-                valid_credit_hour = True
-            else:
-                print("The credit hour for each course should be an integer between 1 and 5 inclusive.")
-        except ValueError:
+        if is_valid_credit_hour(credit_hour):
+            valid_credit_hour = True
+        else:
             print("The credit hour for each course should be an integer between 1 and 5 inclusive.")
 
     with open("course_info.txt", "a") as file:
@@ -60,7 +67,6 @@ def add_student():
     for i in range(no_of_courses):
         course_code = input(f"Enter course code {i + 1}: ")
 
-        # Check if the course code exists
         course_exists = False
         with open("course_info.txt", "r") as file:
             course_records = file.readlines()
@@ -88,7 +94,6 @@ def add_student():
 def add_teacher():
     staff_id = input("Enter the staff ID: ")
 
-    # Check if the staff ID already exists
     with open("teacher_info.txt", "r") as file:
         teacher_records = file.readlines()
         for record in teacher_records:
@@ -115,7 +120,6 @@ def add_teacher():
     for i in range(no_of_courses):
         course_code = input(f"Enter course code {i + 1}: ")
 
-        # Check if the course code already exists
         with open("course_info.txt", "r") as file:
             course_records = file.readlines()
             course_codes = [record.strip().split(",")[0] for record in course_records]
@@ -125,7 +129,6 @@ def add_teacher():
 
         courses.append(course_code)
 
-    # Append the teacher record to the file
     with open("teacher_info.txt", "a") as file:
         file.write(f"{staff_id},{staff_name},{','.join(courses)}\n")
 
@@ -212,14 +215,13 @@ def search_student():
 
 
 def get_credit_hours(course_code):
-    # Read course_info.txt to get the credit hours for a given course code
     with open("course_info.txt", "r") as file:
         for line in file:
             course_data = line.strip().split(",")
             if course_data[0] == course_code:
-                return int(course_data[2])  # Return the credit hours as an integer
+                return int(course_data[2])
 
-    return 0  # If course code is not found, return 0 credit hours
+    return 0
 
 
 def calculate_grade(score):
@@ -243,7 +245,6 @@ def calculate_grade(score):
     return 0.00
 
 
-
 def student_gpa(courses, total_credit_hours=0, total_grade_points=0):
     # Base case: If no courses left, return calculated GPA
     if len(courses) == 0:
@@ -253,13 +254,40 @@ def student_gpa(courses, total_credit_hours=0, total_grade_points=0):
             return total_grade_points / total_credit_hours
 
     # Recursive case: Calculate GPA recursively
-    print(courses)
     course, score = courses[0]
-    print(course, score)
-    credit_hours = get_credit_hours(course)  # Fetch credit hours from course_info.txt based on course code
-    grade = calculate_grade(score)  # Calculate grade based on score
+    credit_hours = get_credit_hours(course)
+    grade = calculate_grade(score)
 
-    return student_gpa(courses[1:], total_credit_hours + credit_hours, total_grade_points + (grade * credit_hours))
+    return student_gpa(courses[1:],total_credit_hours + credit_hours,total_grade_points + (grade * credit_hours))
+
+
+def list_teachers_courses():
+    with open("teacher_info.txt", "r") as file:
+        for line in file:
+            teacher_data = line.strip().split(",")
+            staff_id = teacher_data[0]
+            teacher_name = teacher_data[1]
+            courses = teacher_data[2].split(":")
+
+            print(f"Staff ID: {staff_id}")
+            print(f"Teacher Name: {teacher_name}")
+            print("Teaches the following courses:")
+            for course in courses:
+                print(course)
+            print()
+
+
+def course_gpa():
+    with open("course_info.txt", "r") as file:
+        for line in file:
+            course_data = line.strip().split(",")
+            course_code = course_data[0]
+            course_name = course_data[1]
+            credit_hours = course_data[2]
+
+            print(f"Course Code: {course_code}  Credit Hours: {credit_hours}")
+
+            print()
 
 
 def main():
@@ -293,20 +321,18 @@ def main():
             list_teachers()
         elif choice == "6":
             search_student()
-        '''
         elif choice == "7":
-            list_teacher_courses()
+            list_teachers_courses()
         elif choice == "8":
-            show_course_gpa()
+            course_gpa()
         else:
             print("Invalid choice. Please try again.")
             print()
-        '''
 
 for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
     if not os.path.exists(file_name):
         open(file_name, "w").close()
 
-ls = [('CSC200',45), ('ITS230',90)]
+ls = [('CSC300',45), ('ITS230',90)]
 print(student_gpa(ls))
-print(get_credit_hours("C0224"))
+main()
