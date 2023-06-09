@@ -350,6 +350,6 @@ for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
     if not os.path.exists(file_name):
         open(file_name, "w").close()
 
-ls = [('CSC300',45), ('ITS230',90)]
-print(student_gpa(ls))
-main()
+#ls = [('CSC300',45), ('ITS230',90)]
+#print(student_gpa(ls))
+#main()
