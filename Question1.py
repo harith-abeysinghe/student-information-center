@@ -223,7 +223,6 @@ def get_credit_hours(course_code):
 
 
 def calculate_grade(score):
-    # Define the score-to-grade conversion ranges
     grade_ranges = {
         (80, 101): 4.00,
         (75, 80): 3.67,
@@ -237,24 +236,26 @@ def calculate_grade(score):
         (40, 44): 1.00,
     }
 
-    # Determine the grade based on the score
-    for range_start, range_end in grade_ranges.keys():
+    for range_start, range_end in grade_ranges:
         if range_start <= score < range_end:
             return grade_ranges[(range_start, range_end)]
 
-    return 0.00  # If score is outside the defined ranges, return 0.00 as the grade
+    return 0.00
+
 
 
 def student_gpa(courses, total_credit_hours=0, total_grade_points=0):
     # Base case: If no courses left, return calculated GPA
-    if not courses:
+    if len(courses) == 0:
         if total_credit_hours == 0:
             return 0.0
         else:
             return total_grade_points / total_credit_hours
 
     # Recursive case: Calculate GPA recursively
+    print(courses)
     course, score = courses[0]
+    print(course, score)
     credit_hours = get_credit_hours(course)  # Fetch credit hours from course_info.txt based on course code
     grade = calculate_grade(score)  # Calculate grade based on score
 
@@ -307,4 +308,5 @@ for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
         open(file_name, "w").close()
 
 ls = [('CSC200',45), ('ITS230',90)]
-print(calculate_grade(ls))
+print(student_gpa(ls))
+print(get_credit_hours("C0224"))
