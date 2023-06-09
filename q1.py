@@ -1,21 +1,29 @@
 import os
 
-
 def add_course():
     course_code = input("Enter the course code: ")
 
     with open("course_info.txt", "r") as file:
-        existing_courses = file.readlines()
-        #print(existing_courses)
-        for existing_course in existing_courses:
-            existing_course_data = existing_course.strip().split(",")
-            existing_course_code = existing_course_data[0]
+        course_records = file.readlines()
+        for record in course_records:
+            existing_course_code = record.strip().split(",")[0]
             if existing_course_code == course_code:
-                print("Course already exists.")
+                print("This course code exists in our database.")
                 return
 
     course_name = input("Enter the course name: ")
-    credit_hour = input("Enter the credit hour: ")
+
+    valid_credit_hour = False
+    while not valid_credit_hour:
+        credit_hour = input("How many credit hours does this course have? ")
+        try:
+            credit_hour = int(credit_hour)
+            if 1 <= credit_hour <= 5:
+                valid_credit_hour = True
+            else:
+                print("The credit hour for each course should be an integer between 1 and 5 inclusive.")
+        except ValueError:
+            print("The credit hour for each course should be an integer between 1 and 5 inclusive.")
 
     with open("course_info.txt", "a") as file:
         file.write(f"{course_code},{course_name},{credit_hour}\n")
@@ -40,8 +48,8 @@ def add_student():
     valid_input = False
     while not valid_input:
         try:
-            num_courses = int(input("How many courses does this student have? "))
-            if num_courses < 1 or num_courses > 5:
+            no_of_courses = int(input("How many courses does this student have? "))
+            if no_of_courses < 1 or no_of_courses > 5:
                 print("You can enter a number between 1 to 5.")
             else:
                 valid_input = True
@@ -49,7 +57,7 @@ def add_student():
             print("Number of courses should be an integer value.")
 
     courses = []
-    for i in range(num_courses):
+    for i in range(no_of_courses):
         course_code = input(f"Enter course code {i + 1}: ")
 
         # Check if the course code exists
@@ -75,6 +83,53 @@ def add_student():
         file.write(f"{student_id},{student_name},{program_code},{courses_data}\n")
 
     print("Student added successfully.")
+
+
+def add_teacher():
+    staff_id = input("Enter the staff ID: ")
+
+    # Check if the staff ID already exists
+    with open("teacher_info.txt", "r") as file:
+        teacher_records = file.readlines()
+        for record in teacher_records:
+            existing_staff_id = record.strip().split(",")[0]
+            if existing_staff_id == staff_id:
+                print("This teacher ID exists in our database.")
+                return
+
+    staff_name = input("Enter the teacher name: ")
+
+    is_no_of_courses_valid = False
+    while not is_no_of_courses_valid:
+        no_of_courses = input("How many courses does this teacher teach? ")
+        try:
+            no_of_courses = int(no_of_courses)
+            if 1 <= no_of_courses <= 5:
+                is_no_of_courses_valid = True
+            else:
+                print("You can enter a number between 1 to 5.")
+        except ValueError:
+            print("Number of courses should be an integer value.")
+
+    courses = []
+    for i in range(no_of_courses):
+        course_code = input(f"Enter course code {i + 1}: ")
+
+        # Check if the course code already exists
+        with open("course_info.txt", "r") as file:
+            course_records = file.readlines()
+            course_codes = [record.strip().split(",")[0] for record in course_records]
+            if course_code in course_codes:
+                print("This course has been entered before.")
+                continue
+
+        courses.append(course_code)
+
+    # Append the teacher record to the file
+    with open("teacher_info.txt", "a") as file:
+        file.write(f"{staff_id},{staff_name},{','.join(courses)}\n")
+
+    print("Teacher added successfully.")
 
 
 def main():
@@ -122,4 +177,4 @@ for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
         open(file_name, "w").close()
 
 
-add_student()
+add_teacher()
