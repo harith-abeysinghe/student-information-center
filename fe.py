@@ -20,17 +20,29 @@ def refresh_file(filename):
     else:
         print("File path does not exist.")
 
-def log_events(event, filename):
+def log_events(event, filename='home/saved/temp.txt'): #TODO: change path to /home/saved/temp.txt when run in linux to save it in home directary
     '''
     Write the received event into filename.
     If filename argument is missing, default file: /home/saved/temp.txt
     Parameters:
-        event:  str, event to be written to file
-        filename: str, abs path to file. 
+        event: str, event to be written to file
+        filename: str, abs path to file.
     Returns:
-        success: bool, True if written successfully. Else False. 
+        success: bool, True if written successfully. Else False.
     '''
-    pass
+    try:
+        if not os.path.exists(filename):
+            f = open(filename, 'w')
+            f.close()
+
+        with open(filename, 'a') as f:
+            f.write(event + "\n")
+
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
 
 def analyze_game(fobj):
     '''
@@ -51,7 +63,7 @@ def main(args):
     Returns:
         result: str, formatted string displaying the game analysis results
     '''
-    pass
+    print(log_events("test55"))
 
 if __name__ == "__main__":
-    pass
+    main(5)

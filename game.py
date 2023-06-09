@@ -11,6 +11,7 @@ unikey:
 Keep this line!
 '''
 import random
+import os
 
 '''
 We recommend you import your 'name', 'train' and 'shop' modules to complete this 
@@ -22,6 +23,7 @@ import name
 import train
 import shop
 import q1
+import fe
 
 
 def hunt(gold, cheddar_amount, points):
@@ -41,6 +43,7 @@ def hunt(gold, cheddar_amount, points):
     '''
     fails = 0
     while True:
+        fe.log_events("Start Hunt")
         if fails == 5:
             stop = input('Do you want to continue to hunt? ')
             # exit condition
@@ -52,14 +55,17 @@ def hunt(gold, cheddar_amount, points):
         horn = input('Sound the horn by typing "yes": ')
         # exit condition
         if horn == 'stop hunt':
+            fe.log_events("End hunt")
             return gold, cheddar_amount, points
 
         if horn != 'yes':
             print('Do nothing.')
+            fe.log_events("Do nothing.")
             fails += 1
 
         elif cheddar_amount <= 0:
             print('Nothing happens. You are out of cheese!')
+            fe.log_events("Nothing happens. You are out of cheese!")
             fails += 1
         
         else:
@@ -68,9 +74,11 @@ def hunt(gold, cheddar_amount, points):
             p = random.random()
             if p > 0.5:
                 print('Nothing happens.')
+                fe.log_events("Nothing happens.")
                 fails += 1
             else:
                 print('Caught a Brown mouse!')
+                fe.log_events("Caught a Brown mouse!")
                 fails = 0
                 gold += 125
                 points += 115
@@ -91,6 +99,7 @@ def main():
     # Use the game title from Q1
     q1.main()
     print()
+    fe.log_events("Start game")
 
     hunter_name = input("What's ye name, Hunter?\n")
     # default name to Bob if not valid
@@ -119,6 +128,11 @@ def main():
         option = input()
 
         if option == '1':
+            fe.log_events("End game")
+            src = "home/saved/temp.txt"
+            dst = "home/saved/"+hunter_name+".txt"
+            fe.refresh_file(dst)
+            os.rename(src,dst)
             return
         elif option == '2':
             gold, cheddar_amount, points = hunt(gold, cheddar_amount, points)

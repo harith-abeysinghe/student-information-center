@@ -6,7 +6,7 @@ SID:
 unikey:
 
 '''
-
+import fe
 
 def buy_cheese(gold: int)-> tuple:
     '''
@@ -19,7 +19,7 @@ def buy_cheese(gold: int)-> tuple:
     '''
     gold_spent = 0
     cheese_bought = 0
-
+    
     print(f'You have {gold} gold to spend.')
     command = input('State [cheese quantity]: ').split(' ')
     if len(command) == 1:
@@ -45,6 +45,7 @@ def buy_cheese(gold: int)-> tuple:
     # if price is 40, then we should not be able to buy it
     if gold_spent + price <= gold:
         print(f'Successfully purchase {cheese_quantity} cheddar.')
+        fe.log_events("Bought {cheese_quantity} cheddar")
         # keep track of gold remaining 
         gold_spent += price
         cheese_bought += cheese_quantity
@@ -79,6 +80,7 @@ def enter_shop(gold, cheddar, trap):
         gold:        int, updated gold that player possess
         cheddar:     int, updated amount of cheddar that player possesses
     '''
+    fe.log_events("Start shop")
     print('Welcome to The Cheese Shop!')
     print('Cheddar - 10 gold')
     while True:
@@ -97,6 +99,7 @@ def enter_shop(gold, cheddar, trap):
         elif option == '2':
             display_inventory(gold, cheddar, trap)
         elif option == '3':
+            fe.log_events("End shop")
             break
 
     return gold, cheddar
