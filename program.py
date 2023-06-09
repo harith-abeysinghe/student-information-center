@@ -1,3 +1,8 @@
+'''
+    Name:
+    SID:
+    Unikey:
+'''
 import os
 
 def is_valid_credit_hour(credit_hour):
@@ -80,7 +85,18 @@ def add_student():
             print("This course does not exist in our database.")
             continue
 
-        course_score = input("Enter the student's score for this course: ")
+        valid_score = False
+        while not valid_score:
+            course_score = input("Enter the student's score for this course: ")
+            try:
+                course_score = float(course_score)
+                if 0 <= course_score <= 100:
+                    valid_score = True
+                else:
+                    print("The score for each course should be in the range of 0 to 100.")
+            except ValueError:
+                print("Score should be a float value.")
+
         courses.append(f"{course_code}:{course_score}")
 
     courses_data = ",".join(courses)
@@ -89,6 +105,7 @@ def add_student():
         file.write(f"{student_id},{student_name},{program_code},{courses_data}\n")
 
     print("Student added successfully.")
+
 
 
 def add_teacher():
