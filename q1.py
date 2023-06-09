@@ -132,6 +132,135 @@ def add_teacher():
     print("Teacher added successfully.")
 
 
+def list_students():
+    with open("student_info.txt", "r") as file:
+        for line in file:
+            student_data = line.strip().split(",")
+            student_id = student_data[0]
+            student_name = student_data[1]
+            program_code = student_data[2]
+            courses = student_data[3:]
+
+            print(f"Student ID: {student_id}")
+            print(f"Student Name: {student_name}")
+            print(f"Program Code: {program_code}")
+            print("Courses:")
+
+            for course in courses:
+                course_code, course_score = course.split(":")
+                print(f"- Course Code: {course_code}, Course Score: {course_score}")
+
+            print()
+
+
+def list_teachers():
+    course_info = {}
+    with open("course_info.txt", "r") as file:
+        for line in file:
+            course_data = line.strip().split(",")
+            course_code = course_data[0]
+            course_name = course_data[1]
+            course_info[course_code] = course_name
+
+    with open("teacher_info.txt", "r") as file:
+        for line in file:
+            teacher_data = line.strip().split(",")
+            staff_id = teacher_data[0]
+            teacher_name = teacher_data[1]
+            courses = teacher_data[2:]
+
+            print(f"Staff ID: {staff_id}")
+            print(f"Teacher name: {teacher_name}")
+            print("Teaches the following courses:")
+            for course in courses:
+                course_code = course.split(":")[0]
+                course_name = course_info.get(course_code)
+                print(f" - {course_code}: {course_name}")
+            print()
+
+
+def search_student():
+    search_query = input("Enter student name or ID to search: ")
+
+    with open("student_info.txt", "r") as file:
+        found = False
+        for line in file:
+            student_data = line.strip().split(",")
+            student_id = student_data[0]
+            student_name = student_data[1]
+
+            if search_query.lower() in student_id.lower() or search_query.lower() in student_name.lower():
+                program_code = student_data[2]
+                courses = student_data[3:]
+
+                print(f"Student ID: {student_id}")
+                print(f"Student Name: {student_name}")
+                print(f"Program Code: {program_code}")
+                print("Courses:")
+
+                for course in courses:
+                    course_code, course_score = course.split(":")
+                    print(f"- Course Code: {course_code}, Course Score: {course_score}")
+
+                print()
+
+                found = True
+
+        if not found:
+            print("Student not found.")
+            print()
+
+
+def get_credit_hours(course_code):
+    # Read course_info.txt to get the credit hours for a given course code
+    with open("course_info.txt", "r") as file:
+        for line in file:
+            course_data = line.strip().split(",")
+            if course_data[0] == course_code:
+                return int(course_data[2])  # Return the credit hours as an integer
+
+    return 0  # If course code is not found, return 0 credit hours
+
+
+def calculate_grade(score):
+    # Define the score-to-grade conversion ranges
+    grade_ranges = {
+        (80, 101): 4.00,
+        (75, 80): 3.67,
+        (70, 75): 3.33,
+        (65, 70): 3.00,
+        (60, 65): 2.67,
+        (55, 60): 2.33,
+        (50, 55): 2.00,
+        (47, 50): 1.67,
+        (44, 47): 1.33,
+        (40, 44): 1.00,
+    }
+
+    # Determine the grade based on the score
+    for range_start, range_end in grade_ranges.keys():
+        if range_start <= score < range_end:
+            return grade_ranges[(range_start, range_end)]
+
+    return 0.00  # If score is outside the defined ranges, return 0.00 as the grade
+
+
+def student_gpa(courses, total_credit_hours=0, total_grade_points=0):
+    # Base case: If no courses left, return calculated GPA
+    if not courses:
+        if total_credit_hours == 0:
+            return 0.0
+        else:
+            return total_grade_points / total_credit_hours
+
+    # Recursive case: Calculate GPA recursively
+    course, score = courses[0]
+    credit_hours = get_credit_hours(course)  # Fetch credit hours from course_info.txt based on course code
+    grade = calculate_grade(score)  # Calculate grade based on score
+
+    return student_gpa(courses[1:], total_credit_hours + credit_hours, total_grade_points + (grade * credit_hours))
+
+
 def main():
     while True:
         print("Main Menu")
@@ -154,7 +283,7 @@ def main():
 
         elif choice == "2":
             add_student()
-        '''
+
         elif choice == "3":
             add_teacher()
         elif choice == "4":
@@ -163,6 +292,7 @@ def main():
             list_teachers()
         elif choice == "6":
             search_student()
+        '''
         elif choice == "7":
             list_teacher_courses()
         elif choice == "8":
@@ -176,5 +306,5 @@ for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
     if not os.path.exists(file_name):
         open(file_name, "w").close()
 
-
-add_teacher()
+ls = [('CSC200',45), ('ITS230',90)]
+print(calculate_grade(ls))
