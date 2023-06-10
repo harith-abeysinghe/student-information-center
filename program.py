@@ -180,7 +180,7 @@ def add_teacher():
                 print("You can enter a number between 1 to 5.")
         except ValueError:
             print("Number of courses should be an integer value.")
-
+ #
     courses = []
     for i in range(no_of_courses):
         course_code = input(f"Enter course code {i + 1}: ")
