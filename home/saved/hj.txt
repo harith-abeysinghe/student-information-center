@@ -1,0 +1,6 @@
+Start game
+Start Hunt
+Nothing happens. You are out of cheese!
+Start Hunt
+End hunt
+End game
