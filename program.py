@@ -5,6 +5,34 @@
 '''
 import os
 
+def is_valid_student_id(student_id):
+    return len(student_id) == 10
+
+
+def is_valid_teacher_id(teacher_id):
+    return len(teacher_id) == 7
+
+
+
+def is_valid_program_code(program_code):
+    return len(program_code) == 5
+
+
+def is_valid_course_code(course_code):
+    return len(course_code) == 6
+
+
+def is_valid_name(name):
+    return 1 <= len(name) <= 40 and name.isalpha()
+
+
+def is_valid_score(score):
+    try:
+        score = float(score)
+        return 0 <= score <= 100
+    except ValueError:
+        return False
+
 def is_valid_credit_hour(credit_hour):
     try:
         credit_hour = int(credit_hour)
@@ -18,6 +46,9 @@ def is_valid_credit_hour(credit_hour):
 
 def add_course():
     course_code = input("Enter the course code: ")
+    if not is_valid_course_code(course_code):
+        print("The length of course codes entered should be 6.")
+        return
 
     with open("course_info.txt", "r") as file:
         course_records = file.readlines()
@@ -28,6 +59,10 @@ def add_course():
                 return
 
     course_name = input("Enter the course name: ")
+    if not is_valid_name(course_name):
+        print(
+            "The length of the course name should be between 1 and 40 characters inclusive, and it should be alphabetic.")
+        return
 
     valid_credit_hour = False
     while not valid_credit_hour:
@@ -45,6 +80,9 @@ def add_course():
 
 def add_student():
     student_id = input("Enter the student ID: ")
+    if not is_valid_student_id(student_id):
+        print("The length of the student ID should be 10 characters.")
+        return
 
     with open("student_info.txt", "r") as file:
         student_records = file.readlines()
@@ -55,8 +93,13 @@ def add_student():
                 return
 
     student_name = input("Enter the student name: ")
+    if not is_valid_name(student_name):
+        print("The length of the student name should be between 1 and 40 characters inclusive, and it should be alphabetic.")
+        return
     program_code = input("Enter the program code: ")
-
+    if not is_valid_program_code(program_code):
+        print("The length of the program code entered should be 5.")
+        return
     valid_input = False
     while not valid_input:
         try:
@@ -110,6 +153,9 @@ def add_student():
 
 def add_teacher():
     staff_id = input("Enter the staff ID: ")
+    if not is_valid_teacher_id(staff_id):
+        print("The length of the staff ID should be 7 characters.")
+        return
 
     with open("teacher_info.txt", "r") as file:
         teacher_records = file.readlines()
@@ -120,7 +166,9 @@ def add_teacher():
                 return
 
     staff_name = input("Enter the teacher name: ")
-
+    if not is_valid_name(staff_name):
+        print("The length of the teacher name should be between 1 and 40 characters inclusive, and it should be alphabetic.")
+        return
     is_no_of_courses_valid = False
     while not is_no_of_courses_valid:
         no_of_courses = input("How many courses does this teacher teach? ")
@@ -136,6 +184,9 @@ def add_teacher():
     courses = []
     for i in range(no_of_courses):
         course_code = input(f"Enter course code {i + 1}: ")
+        if not is_valid_course_code(course_code):
+            print("The length of the course code entered should be 6.")
+            return
 
         with open("course_info.txt", "r") as file:
             course_records = file.readlines()
@@ -343,7 +394,7 @@ def main():
         elif choice == "8":
             course_gpa()
         else:
-            print("Invalid choice. Please try again.")
+            print("Wrong menu selection.")
             print()
 
 for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
@@ -352,4 +403,4 @@ for file_name in ["student_info.txt", "course_info.txt", "teacher_info.txt"]:
 
 #ls = [('CSC300',45), ('ITS230',90)]
 #print(student_gpa(ls))
-#main()
+main()
