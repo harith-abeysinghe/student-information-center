@@ -8,6 +8,7 @@ unikey:
 
 '''
 import os.path
+import sys
 
 def refresh_file(filename):
     '''
@@ -53,7 +54,59 @@ def analyze_game(fobj):
     Returns:
         output: str, formatted string displaying the game analysis results.
     '''
-    pass
+    try:
+        if not os.path.exists("home/saved/"+fobj+".txt"):
+            return ""
+        with open("home/saved/"+fobj+".txt","r") as f:
+            t = f.read().split("\n")
+            if "Start game" in t and "End game" in t:
+                start = t.index("Start game")  
+                end = t.index("End game")
+                gold = 0
+                chedaar = 0
+                total_sound = 0
+                total_misses = 0
+                total_forgot = 0
+                total_brown = 0
+                market = 0
+                hunt = 0
+                for i in range(start, end):
+                    text = t[i]
+                    if text == "Start shop":
+                        market = 1
+                    if text == "End shop":
+                        market = 0
+                    if text == "Start hunt":
+                        hunt = 1
+                    if text == "Stop hunt":
+                        hunt = 0
+                    if market and "Bought" in text:
+                        temp = text.split()
+                        chedaar += int(temp[1])
+                        gold += int(temp[1]) * 10
+                    if hunt and text == "Nothing happens.":
+                        total_misses += 1
+                    if hunt and text == "Nothing happens. You are out of cheese!":
+                        total_forgot += 1
+                    if hunt and text == "Caught a Brown mouse!":
+                        total_brown += 1
+                total_sound = total_brown + total_misses + total_forgot
+                goldearn = total_brown * 125
+                    
+
+                return f"""You have spent {gold} gold in The Cheese Shop.
+Total cheddar bought: {chedaar}
+You have sounded the horn {total_sound} times during The Hunt.
+Total Brown mouse caught: {total_brown}
+Total empty catches: {total_misses}
+Total hunt without cheese: {total_forgot}
+You have earned {goldearn} gold from The Hunt."""
+
+            else:
+                return ""
+    except Exception:
+        return ""
+
 
 def main(args):
     '''
@@ -63,7 +116,11 @@ def main(args):
     Returns:
         result: str, formatted string displaying the game analysis results
     '''
-    print(log_events("test55"))
+    if len(args) != 1:
+        print("Format: python3 fe.py <name>")
+        return 
+    
+    print(analyze_game(args[0]))
 
 if __name__ == "__main__":
-    main(5)
+    main(sys.argv[1:])
